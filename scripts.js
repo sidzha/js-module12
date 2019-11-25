@@ -1,17 +1,17 @@
 'use sctrict';
 
 const ballElem = $('.js-ball'); //получаем мячик
-const FIELD_WIDTH = 281; //ширина поля
-const BALL_TRAVEL_DIST = 445; //дистацния до противоположной стороны
-const GOAL_START_POINT = 115; //начало ворот
-const GOAL_END_POINT = 145; //конец ворот
-const START_BALL_POS = 17; //начальное положение мячи
-const ANIMATION_SPEED = 1000; //скорость анимации
-let currentBallPos = START_BALL_POS; //настоящее положение мяча
+const FIELD_Y_START_POINT = 0; // начало поля по Y
+const FIELD_Y_END_POINT = 281; // конец поля по Y
+const GOAL_Y_START_POINT = 115; //начало ворот по Y оси
+const GOAL_Y_END_POINT = 145; //конец ворот по Y оси
+const BALL_X_START_POS = 17; //начальное положение мячи по X
+const BALL_X_END_POS = 445; //дистацния до противоположной стороны по X
+const ANIMATION_DURATION = 1000; //скорость анимации
+let currentBallPos = BALL_X_START_POS; //настоящее положение мяча
 
-function getRandomYposition() {
-  //создаем функцию получения случайного числа для позиции по Y
-  return Math.floor(Math.random() * FIELD_WIDTH) + 1;
+function getRandomNumber(startRange, endRange) {
+  return Math.floor(Math.random() * (endRange - startRange) + startRange);
 }
 
 function coreGame(currentBallPos, distance) {
@@ -21,14 +21,17 @@ function coreGame(currentBallPos, distance) {
   ballElem.animate(
     {
       left: (currentBallPos += distance),
-      top: (randomYposition = getRandomYposition())
+      top: (randomYposition = getRandomNumber(
+        FIELD_Y_START_POINT,
+        FIELD_Y_END_POINT
+      ))
     },
     {
-      duration: ANIMATION_SPEED,
+      duration: ANIMATION_DURATION,
       complete: function() {
         if (
-          randomYposition >= GOAL_START_POINT &&
-          randomYposition <= GOAL_END_POINT
+          randomYposition >= GOAL_Y_START_POINT &&
+          randomYposition <= GOAL_Y_END_POINT
         ) {
           console.log('goal!');
         }
@@ -40,9 +43,9 @@ function coreGame(currentBallPos, distance) {
 
 ballElem.on('click', function() {
   //по клику проверяем положение меча и передаем значение с + и -
-  if (currentBallPos <= START_BALL_POS) {
-    currentBallPos = coreGame(currentBallPos, BALL_TRAVEL_DIST);
+  if (currentBallPos <= BALL_X_START_POS) {
+    currentBallPos = coreGame(currentBallPos, BALL_X_END_POS);
   } else {
-    currentBallPos = coreGame(currentBallPos, -BALL_TRAVEL_DIST);
+    currentBallPos = coreGame(currentBallPos, -BALL_X_END_POS);
   }
 });
